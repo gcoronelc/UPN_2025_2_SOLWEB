@@ -1,4 +1,4 @@
-![SOLUCIONES EB Y APLICACIONES DISTRIBUIDAS](https://raw.githubusercontent.com/gcoronelc/UPN_2024_1_SOLWEB/master/img/logo.png)
+![SOLUCIONES EB Y APLICACIONES DISTRIBUIDAS](https://raw.githubusercontent.com/gcoronelc/UPN_2025_2_SOLWEB/master/img/logo.png)
 
 # DATOS GENERALES del curso
 
