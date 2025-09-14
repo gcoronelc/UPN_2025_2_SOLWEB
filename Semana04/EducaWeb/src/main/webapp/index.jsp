@@ -1,4 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+	String mensaje = null;
+	if(request.getAttribute("mensaje") != null){
+		mensaje = request.getAttribute("mensaje").toString();
+	}
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -159,19 +165,16 @@
             <p>Ingresa tus credenciales para acceder</p>
         </div>
         
-        <!-- Alerta de error (oculta por defecto) -->
-        <div class="alert alert-danger d-none" id="errorAlert" role="alert">
+        <!-- Alerta de error (oculta por defecto) d-none-->
+		<% if(mensaje != null){%>
+        <div class="alert alert-danger " id="errorAlert" role="alert">
             <i class="bi bi-exclamation-triangle"></i>
-            <span id="errorMessage">Usuario o contraseña incorrectos</span>
+            <span id="errorMessage"><%= mensaje %></span>
         </div>
-        
-        <!-- Alerta de éxito (oculta por defecto) -->
-        <div class="alert alert-success d-none" id="successAlert" role="alert">
-            <i class="bi bi-check-circle"></i>
-            ¡Inicio de sesión exitoso!
-        </div>
-        
-        <form id="loginForm" novalidate>
+        <% } %>
+		
+       
+        <form id="loginForm" novalidate method="post" action="Login">
             <!-- Campo Usuario -->
             <div class="mb-3">
                 <div class="input-group">
@@ -228,22 +231,6 @@
                 </div>
             </div>
             
-            <!-- Recordar y Olvidé contraseña -->
-            <div class="remember-forgot">
-                <div class="form-check">
-                    <input 
-                        class="form-check-input" 
-                        type="checkbox" 
-                        value="" 
-                        id="recordar"
-                        name="recordar"
-                    >
-                    <label class="form-check-label" for="recordar">
-                        Recordarme
-                    </label>
-                </div>
-                <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
-            </div>
             
             <!-- Botón de envío -->
             <div class="d-grid mb-3">
@@ -284,49 +271,7 @@
         const loginSpinner = document.getElementById('loginSpinner');
         const loginButtonText = document.getElementById('loginButtonText');
         
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            // Hide alerts
-            errorAlert.classList.add('d-none');
-            successAlert.classList.add('d-none');
-            
-            // Validate form
-            if (loginForm.checkValidity()) {
-                // Show loading state
-                loginSpinner.classList.remove('d-none');
-                loginButtonText.textContent = 'Iniciando...';
-                
-                // Get form data
-                const formData = new FormData(loginForm);
-                const usuario = formData.get('usuario');
-                const clave = formData.get('clave');
-                const recordar = formData.get('recordar') ? true : false;
-                
-                // Simulate login process (replace with actual login logic)
-                setTimeout(() => {
-                    // Reset loading state
-                    loginSpinner.classList.add('d-none');
-                    loginButtonText.textContent = 'Iniciar Sesión';
-                    
-                    // Demo: show success for user "admin" with password "123456"
-                    if (usuario === 'admin' && clave === '123456') {
-                        successAlert.classList.remove('d-none');
-                        
-                        // Redirect or perform login actions here
-                        setTimeout(() => {
-                            alert('¡Login exitoso! Aquí integrarías con tu sistema de autenticación.');
-                        }, 1000);
-                    } else {
-                        errorAlert.classList.remove('d-none');
-                        document.getElementById('errorMessage').textContent = 'Usuario o contraseña incorrectos. Prueba: admin / 123456';
-                    }
-                }, 1500);
-            }
-            
-            loginForm.classList.add('was-validated');
-        });
+		
         
         // Clear validation on input
         const inputs = loginForm.querySelectorAll('input');
