@@ -1,0 +1,14 @@
+pe\edu\upn\educaweb\prueba\Prueba02Precio1.class
+pe\edu\upn\educaweb\resources\JakartaEE10Resource.class
+pe\edu\upn\educaweb\db\AccesoDB.class
+pe\edu\upn\educaweb\util\JdbcUtil.class
+pe\edu\upn\educaweb\dto\EmpleadoDto.class
+pe\edu\upn\educaweb\service\LogonService.class
+pe\edu\upn\educaweb\controller\EducaController.class
+pe\edu\upn\educaweb\prueba\Prueba03ValidaUsuario02.class
+pe\edu\upn\educaweb\JakartaRestConfiguration.class
+pe\edu\upn\educaweb\prueba\Prueba03ValidaUsuario01.class
+pe\edu\upn\educaweb\service\EducaService.class
+pe\edu\upn\educaweb\controller\LogonController.class
+pe\edu\upn\educaweb\prueba\Prueba02Precio2.class
+pe\edu\upn\educaweb\prueba\Prueba01.class
