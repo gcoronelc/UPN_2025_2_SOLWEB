@@ -1,0 +1,116 @@
+{
+	"info": {
+		"_postman_id": "76b8a966-203d-430d-a519-112ae9d94b41",
+		"name": "Semana08",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49198049",
+		"_collection_link": "https://egcc-upn-1282307.postman.co/workspace/SOLWEB-2025-2~0f803cb5-11af-40a6-9aed-ee089900dafe/collection/49198049-76b8a966-203d-430d-a519-112ae9d94b41?action=share&source=collection_link&creator=49198049"
+	},
+	"item": [
+		{
+			"name": "Saludo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/saludo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"saludo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sumar",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/sumar?n1=5&n2=8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sumar"
+					],
+					"query": [
+						{
+							"key": "n1",
+							"value": "5"
+						},
+						{
+							"key": "n2",
+							"value": "8"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Opera",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/opera?n1=5&n2=8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"opera"
+					],
+					"query": [
+						{
+							"key": "n1",
+							"value": "5"
+						},
+						{
+							"key": "n2",
+							"value": "8"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Opera2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"n1\":60,\r\n    \"n2\":9\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/opera2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"opera2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
