@@ -46,12 +46,21 @@ public class ProcesosService {
 			throw new RuntimeException("Tipo de matricula incorrecta.");
 		}
 		// Verificar cuotas
-		
+		if(bean.getCuotas()<1 || bean.getCuotas()>3) {
+			throw new RuntimeException("El numero de cuotas es incorrecto.");
+		}
+		String tipo = bean.getTipo();
+		if((tipo.equals("BECA") || tipo.equals("MEDIABECA")) && (bean.getCuotas()!=1)) {
+			throw new RuntimeException("El numero de cuotas es incorrecto.");
+		}
 		// Operaciones
 		// Leer precio
-		
+		sql = "select cur_precio precio from CURSO where cur_id=?";
+		double precio = jdbcTemplate.queryForObject(sql, Double.class, bean.getIdCurso());
 		// Establecer precio
-		bean.setPrecio(777777);
+		if(tipo.equals("MEDIABECA")) precio = precio * 0.50;
+		if(tipo.equals("BECA")) precio = precio * 0.10;
+		bean.setPrecio(precio);
 		// Registrar matricula
 		sql = """
 			insert into MATRICULA(cur_id,alu_id,emp_id,mat_tipo,
