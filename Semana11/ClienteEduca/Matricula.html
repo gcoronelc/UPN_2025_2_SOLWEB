@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Matrícula</title>
+    <!-- Bootstrap 3.3.7 CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery (requerido por Bootstrap y AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 3.3.7 JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Registro de Matrícula</h1>
+        <form id="matriculaForm" class="form-horizontal">
+            <div class="form-group">
+                <label for="idCurso" class="col-sm-2 control-label">ID Curso:</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="idCurso" name="idCurso" min="1" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="idAlumno" class="col-sm-2 control-label">ID Alumno:</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="idAlumno" name="idAlumno" min="1" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tipo" class="col-sm-2 control-label">Tipo de Matrícula:</label>
+                <div class="col-sm-9">
+                    <select class="form-control" id="tipo" name="tipo" required>
+                        <option value="">Seleccione...</option>
+                        <option value="REGULAR">REGULAR</option>
+                        <option value="MEDIABECA">MEDIABECA</option>
+                        <option value="BECA">BECA</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cuotas" class="col-sm-2 control-label">Cuotas:</label>
+                <div class="col-sm-9">
+                    <select class="form-control" id="cuotas" name="cuotas" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Registrar Matrícula</button>
+                </div>
+            </div>
+        </form>
+        <div id="result" class="alert" style="display: none;"></div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Lógica para cuotas basada en tipo
+            $('#tipo').on('change', function() {
+                var tipo = $(this).val();
+                if (tipo === 'BECA' || tipo === 'MEDIABECA') {
+                    $('#cuotas').val('1').prop('disabled', true);
+                } else {
+                    $('#cuotas').prop('disabled', false);
+                }
+            });
+
+            // Manejar envío del formulario
+            $('#matriculaForm').on('submit', function(e) {
+                e.preventDefault();
+                var formData = {
+                    idCurso: parseInt($('#idCurso').val()),
+                    idAlumno: parseInt($('#idAlumno').val()),
+                    tipo: $('#tipo').val(),
+                    cuotas: parseInt($('#cuotas').val()),
+                    idEmpleado: 2  // Dato en duro
+                };
+
+                // Validaciones básicas
+                if (!formData.idCurso || !formData.idAlumno || !formData.tipo) {
+                    showResult('Por favor, complete todos los campos requeridos.', 'danger');
+                    return;
+                }
+
+                // Enviar AJAX POST
+                $.ajax({
+                    url: 'http://localhost:8080/educa/api/matricular',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        // Mostrar resultado exitoso
+                        var resultHtml = '<h4>Matrícula Registrada Exitosamente</h4>' +
+                            '<p><strong>ID Curso:</strong> ' + response.idCurso + '</p>' +
+                            '<p><strong>ID Alumno:</strong> ' + response.idAlumno + '</p>' +
+                            '<p><strong>Tipo:</strong> ' + response.tipo + '</p>' +
+                            '<p><strong>Precio:</strong> ' + response.precio + '</p>' +
+                            '<p><strong>Cuotas:</strong> ' + response.cuotas + '</p>' +
+                            '<p><strong>ID Empleado:</strong> ' + response.idEmpleado + '</p>' +
+                            '<p><strong>Estado:</strong> ' + response.estado + '</p>';
+                        showResult(resultHtml, 'success');
+                    },
+                    error: function(xhr) {
+                        // Mostrar error
+                        var errorData = xhr.responseJSON;
+                        var errorMsg = errorData ? errorData.mensaje : 'Error desconocido al registrar la matrícula.';
+                        showResult('Error: ' + errorMsg, 'danger');
+                    }
+                });
+            });
+
+            function showResult(message, type) {
+                $('#result').removeClass('alert-success alert-danger').addClass('alert-' + type).html(message).show();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import pe.edu.upn.educaapp.dto.MatriculaDto;
 import pe.edu.upn.educaapp.service.ConsultasService;
 import pe.edu.upn.educaapp.service.ProcesosService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/educa/api")
 public class EducaRest {
