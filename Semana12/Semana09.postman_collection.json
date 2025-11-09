@@ -33,6 +33,72 @@
 					"response": []
 				},
 				{
+					"name": "Precio Curso Ok",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/educa/api/preciocurso/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"preciocurso",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matriculados - Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/educa/api/15/matriculados",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"15",
+								"matriculados"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matriculados - Sin Matriculas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/educa/api/7/matriculados",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"7",
+								"matriculados"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Matriculados Ok",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -216,6 +282,36 @@
 								"educa",
 								"api",
 								"matricular"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ValidarUsuario OK",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"usuario\":\"kdelgado\",\r\n\"clave\":\"noimporta\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/educa/api/logon",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"logon"
 							]
 						}
 					},
