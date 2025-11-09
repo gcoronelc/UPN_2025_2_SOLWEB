@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <!-- Bootstrap 3.3.7 CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery (requerido por Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 3.3.7 JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        /* Estilos adicionales si es necesario */
+        body {
+            padding-top: 70px; /* Para evitar que el navbar tape el contenido */
+        }
+        #main-content {
+            min-height: 400px; /* Altura mínima para el área de contenido */
+            padding: 20px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar horizontal -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">EDUCA</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#" id="inicio">Inicio</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Procesos <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="submenu-link" data-page="Matricula.html">Matricula</a></li>
+                            <li><a href="#" class="submenu-link" data-page="proceso2.html">Proceso 2</a></li>
+                            <li><a href="#" class="submenu-link" data-page="proceso3.html">Proceso 3</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Consultas <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="submenu-link" data-page="ConsultaPrecioV1.html">Precio de curso</a></li>
+                            <li><a href="#" class="submenu-link" data-page="consultaMatriculadosV1.html">Matriculados</a></li>
+                            <li><a href="#" class="submenu-link" data-page="consulta3.html">Consulta 3</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Maestros <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="submenu-link" data-page="maestro1.html">Maestro 1</a></li>
+                            <li><a href="#" class="submenu-link" data-page="maestro2.html">Maestro 2</a></li>
+                            <li><a href="#" class="submenu-link" data-page="maestro3.html">Maestro 3</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reportes <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="submenu-link" data-page="reporte1.html">Reporte 1</a></li>
+                            <li><a href="#" class="submenu-link" data-page="reporte2.html">Reporte 2</a></li>
+                            <li><a href="#" class="submenu-link" data-page="reporte3.html">Reporte 3</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Área principal para cargar contenido -->
+    <div class="container">
+        <div id="main-content">
+            <h1>Bienvenido a la Página Principal</h1>
+            <p>Selecciona una opción del menú para cargar contenido aquí.</p>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Manejar clics en enlaces de submenús
+            $('.submenu-link').on('click', function(e) {
+                e.preventDefault();
+                var page = $(this).data('page');
+                // Cargar la página usando AJAX (jQuery .load())
+                $('#main-content').load(page, function(response, status, xhr) {
+                    if (status == "error") {
+                        $('#main-content').html('<h2>Error al cargar la página</h2><p>' + xhr.status + ' ' + xhr.statusText + '</p>');
+                    }
+                });
+            });
+
+            // Manejar clic en Inicio (opcional, recargar contenido inicial)
+            $('#inicio').on('click', function(e) {
+                e.preventDefault();
+                $('#main-content').html('<h1>Bienvenido a la Página Principal</h1><p>Selecciona una opción del menú para cargar contenido aquí.</p>');
+            });
+        });
+    </script>
+</body>
+</html>

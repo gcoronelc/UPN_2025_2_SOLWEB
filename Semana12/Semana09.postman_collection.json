@@ -1,0 +1,227 @@
+{
+	"info": {
+		"_postman_id": "2cdf7191-067c-499f-868a-2b4514828822",
+		"name": "Semana09",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49198049",
+		"_collection_link": "https://egcc-upn-1282307.postman.co/workspace/SOLWEB-2025-2~0f803cb5-11af-40a6-9aed-ee089900dafe/collection/49198049-2cdf7191-067c-499f-868a-2b4514828822?action=share&source=collection_link&creator=49198049"
+	},
+	"item": [
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "Precio Curso Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/educa/api/preciocurso/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"preciocurso",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matriculados Ok",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/educa/api/2/matriculados",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"2",
+								"matriculados"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST",
+			"item": [
+				{
+					"name": "Matricular_YaExiste",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCurso\":2,\r\n    \"idAlumno\":1,\r\n    \"tipo\":\"Alfa\",\r\n    \"cuotas\":20,\r\n    \"idEmpleado\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/educa/api/matricular",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"matricular"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matricular_SinVacantes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"idCurso\":7,\r\n\"idAlumno\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/educa/api/matricular",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"matricular"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matricular_TipoIncorrecto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"idCurso\":8,\r\n\"idAlumno\":1,\r\n\"tipo\":\"FREE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/educa/api/matricular",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"matricular"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matricular_ErrorCuotas",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"idCurso\":8,\r\n\"idAlumno\":5,\r\n\"tipo\":\"BECA\",\r\n\"cuotas\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/educa/api/matricular",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"matricular"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Matricular_Correcto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"idCurso\":8,\r\n\"idAlumno\":3,\r\n\"idEmpleado\":3,\r\n\"tipo\":\"beca\",\r\n\"cuotas\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/educa/api/matricular",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"educa",
+								"api",
+								"matricular"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

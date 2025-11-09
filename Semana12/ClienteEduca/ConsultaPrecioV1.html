@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Precio de Curso</title>
+    
+    <!-- Bootstrap 3.3.7 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 50px 0;
+        }
+        
+        .container-custom {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .panel-custom {
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: none;
+        }
+        
+        .panel-heading-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px 10px 0 0;
+            padding: 20px;
+        }
+        
+        .panel-body-custom {
+            padding: 30px;
+            background: white;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .btn-consultar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .btn-consultar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .resultado {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        
+        .resultado-exitoso {
+            background-color: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        
+        .resultado-error {
+            background-color: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+        
+        .precio-valor {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #28a745;
+        }
+        
+        .spinner {
+            display: none;
+            margin: 20px auto;
+        }
+        
+        .input-group-lg .form-control {
+            height: 50px;
+            font-size: 18px;
+        }
+        
+        .input-group-lg .input-group-addon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container container-custom">
+        <div class="panel panel-default panel-custom">
+            <div class="panel-heading panel-heading-custom">
+                <h3 class="panel-title text-center">
+                    <span class="glyphicon glyphicon-education"></span>
+                    Consulta de Precio de Curso
+                </h3>
+            </div>
+            <div class="panel-body panel-body-custom">
+                <form id="formConsulta">
+                    <div class="form-group">
+                        <label for="idCurso">ID del Curso:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-tag"></span>
+                            </span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="idCurso" 
+                                   placeholder="Ingrese el ID del curso" 
+                                   required
+                                   min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg btn-consultar">
+                            <span class="glyphicon glyphicon-search"></span>
+                            Consultar Precio
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Spinner de carga -->
+                <div class="spinner text-center">
+                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" 
+                          style="font-size: 40px; color: #667eea;"></span>
+                    <p>Consultando...</p>
+                </div>
+                
+                <!-- Resultado exitoso -->
+                <div id="resultadoExitoso" class="resultado resultado-exitoso">
+                    <h4>
+                        <span class="glyphicon glyphicon-ok-circle"></span>
+                        Precio Encontrado
+                    </h4>
+                    <div class="precio-valor">
+                        S/ <span id="precioValor"></span>
+                    </div>
+                    <p class="text-muted">Curso ID: <strong id="cursoIdResultado"></strong></p>
+                </div>
+                
+                <!-- Resultado error -->
+                <div id="resultadoError" class="resultado resultado-error">
+                    <h4>
+                        <span class="glyphicon glyphicon-remove-circle"></span>
+                        Curso No Encontrado
+                    </h4>
+                    <p>El curso con ID <strong id="cursoIdError"></strong> no existe en el sistema.</p>
+                    <p class="text-muted">Por favor, verifique el ID e intente nuevamente.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery 3.7.1 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.7 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // URL base del servicio REST - AJUSTA SEGÚN TU CONFIGURACIÓN
+            const API_BASE_URL = 'http://localhost:8080/educa/api';
+            
+            // CSS para animar el spinner
+            $('<style>')
+                .text('.glyphicon-refresh-animate { animation: spin 1s infinite linear; } @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }')
+                .appendTo('head');
+            
+            $('#formConsulta').on('submit', function(e) {
+                e.preventDefault();
+                
+                const idCurso = $('#idCurso').val();
+                
+                // Ocultar resultados anteriores
+                $('.resultado').hide();
+                
+                // Mostrar spinner
+                $('.spinner').show();
+                
+                // Realizar petición AJAX con jQuery
+                $.ajax({
+                    url: `${API_BASE_URL}/${idCurso}/precio`,
+                    type: 'GET',
+                    dataType: 'json',
+                    timeout: 10000,
+                    success: function(precio) {
+                        // Ocultar spinner
+                        $('.spinner').hide();
+                        
+                        // Mostrar resultado exitoso
+                        $('#precioValor').text(precio.toFixed(2));
+                        $('#cursoIdResultado').text(idCurso);
+                        $('#resultadoExitoso').fadeIn();
+                    },
+                    error: function(xhr, status, error) {
+                        // Ocultar spinner
+                        $('.spinner').hide();
+                        
+                        if (xhr.status === 404) {
+                            // Curso no encontrado
+                            $('#cursoIdError').text(idCurso);
+                            $('#resultadoError').fadeIn();
+                        } else {
+                            // Otro tipo de error
+                            alert('Error al consultar el servicio: ' + error);
+                        }
+                    }
+                });
+            });
+            
+            // Limpiar resultados cuando se cambia el input
+            $('#idCurso').on('input', function() {
+                $('.resultado').hide();
+            });
+        });
+    </script>
+</body>
+</html>
