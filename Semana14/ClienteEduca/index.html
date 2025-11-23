@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <!-- Bootstrap 3.3.7 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-header h2 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .form-group label {
+            font-weight: 500;
+            color: #555;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            transition: transform 0.2s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .alert {
+            margin-top: 20px;
+            display: none;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .icon-user {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .icon-user i {
+            font-size: 60px;
+            color: #667eea;
+        }
+        #loading {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="icon-user">
+                <span class="glyphicon glyphicon-user" style="font-size: 60px; color: #667eea;"></span>
+            </div>
+            <h2>Iniciar Sesión</h2>
+            <p>Ingrese sus credenciales para continuar</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="usuario">Usuario</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ingrese su usuario" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="clave">Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                    <input type="password" class="form-control" id="clave" name="clave" placeholder="Ingrese su contraseña" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-login">
+                <span id="btnText">Iniciar Sesión</span>
+                <span id="loading">
+                    <span class="glyphicon glyphicon-refresh glyphicon-spin"></span> Validando...
+                </span>
+            </button>
+        </form>
+        
+        <div id="errorAlert" class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            <strong>Error!</strong> Usuario o contraseña incorrectos.
+        </div>
+        
+        <div id="successAlert" class="alert alert-success" role="alert">
+            <span class="glyphicon glyphicon-ok-sign"></span>
+            <strong>Éxito!</strong> Redirigiendo...
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 3.3.7 JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#loginForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Ocultar alertas previas
+                $('#errorAlert').hide();
+                $('#successAlert').hide();
+                
+                // Mostrar indicador de carga
+                $('#btnText').hide();
+                $('#loading').show();
+                $('.btn-login').prop('disabled', true);
+                
+                // Obtener datos del formulario
+                var loginData = {
+                    usuario: $('#usuario').val(),
+                    clave: $('#clave').val()
+                };
+                
+                // Realizar petición AJAX
+                $.ajax({
+                    url: 'http://localhost:8080/educa/api/logon',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(loginData),
+                    success: function(response) {
+                        // Mostrar mensaje de éxito
+                        $('#successAlert').fadeIn();
+                        
+                        // Guardar datos del empleado en sessionStorage si es necesario
+                        sessionStorage.setItem('empleado', JSON.stringify(response));
+                        
+                        // Redirigir a main.html después de 1 segundo
+                        setTimeout(function() {
+                            window.location.href = 'main.html';
+                        }, 1000);
+                    },
+                    error: function(xhr, status, error) {
+                        // Ocultar indicador de carga
+                        $('#btnText').show();
+                        $('#loading').hide();
+                        $('.btn-login').prop('disabled', false);
+                        
+                        // Mostrar mensaje de error
+                        if (xhr.status === 401) {
+                            $('#errorAlert').fadeIn();
+                        } else {
+                            $('#errorAlert').html(
+                                '<span class="glyphicon glyphicon-exclamation-sign"></span> ' +
+                                '<strong>Error!</strong> Ocurrió un error al procesar la solicitud.'
+                            ).fadeIn();
+                        }
+                        
+                        // Limpiar contraseña por seguridad
+                        $('#clave').val('');
+                    }
+                });
+            });
+            
+            // Ocultar alertas al escribir en los campos
+            $('#usuario, #clave').on('input', function() {
+                $('#errorAlert').fadeOut();
+                $('#successAlert').fadeOut();
+            });
+        });
+    </script>
+</body>
+</html>

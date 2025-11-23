@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudiantes Matriculados por Curso</title>
+    
+    <!-- Bootstrap 3.3.7 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px 0;
+        }
+        
+        .container-custom {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .panel-custom {
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: none;
+            background: white;
+        }
+        
+        .panel-heading-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px 10px 0 0;
+            padding: 25px;
+        }
+        
+        .panel-body-custom {
+            padding: 30px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .btn-consultar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: white;
+            transition: transform 0.2s;
+        }
+        
+        .btn-consultar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .spinner {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+            color: #667eea;
+        }
+        
+        .spinner-icon {
+            font-size: 40px;
+        }
+        
+        .alert-custom {
+            display: none;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+        
+        .tabla-matriculados {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .table-custom {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .table-custom thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .table-custom thead th {
+            font-weight: 600;
+            border: none;
+            padding: 15px;
+        }
+        
+        .table-custom tbody tr {
+            transition: background-color 0.2s;
+        }
+        
+        .table-custom tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .badge-nota {
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 20px;
+        }
+        
+        .nota-aprobado {
+            background-color: #5cb85c;
+            color: white;
+        }
+        
+        .nota-desaprobado {
+            background-color: #d9534f;
+            color: white;
+        }
+        
+        .estadisticas {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .estadistica-item {
+            display: inline-block;
+            margin-right: 30px;
+        }
+        
+        .estadistica-valor {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .input-group-lg .form-control {
+            height: 50px;
+            font-size: 18px;
+        }
+        
+        .input-group-lg .input-group-addon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container container-custom">
+        <div class="panel panel-default panel-custom">
+            <div class="panel-heading panel-heading-custom">
+                <h3 class="panel-title text-center">
+                    <span class="glyphicon glyphicon-education"></span>
+                    Consulta de Estudiantes Matriculados
+                </h3>
+            </div>
+            <div class="panel-body panel-body-custom">
+                
+                <!-- Formulario de búsqueda -->
+                <form id="formConsulta">
+                    <div class="form-group">
+                        <label for="idCurso">ID del Curso:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-tag"></span>
+                            </span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="idCurso" 
+                                   placeholder="Ingrese el ID del curso" 
+                                   required
+                                   min="1">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-primary btn-lg btn-consultar">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                    Consultar
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Spinner -->
+                <div class="spinner">
+                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate spinner-icon"></span>
+                    <p>Consultando estudiantes matriculados...</p>
+                </div>
+                
+                <!-- Alerta de curso no encontrado -->
+                <div id="alertaError" class="alert alert-danger alert-custom">
+                    <h4>
+                        <span class="glyphicon glyphicon-remove-circle"></span>
+                        Curso No Encontrado
+                    </h4>
+                    <p>El curso con ID <strong id="cursoIdError"></strong> no existe en el sistema.</p>
+                </div>
+                
+                <!-- Alerta de sin matriculados -->
+                <div id="alertaSinMatriculados" class="alert alert-warning alert-custom">
+                    <h4>
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        Sin Estudiantes Matriculados
+                    </h4>
+                    <p>El curso con ID <strong id="cursoIdVacio"></strong> existe pero no tiene estudiantes matriculados.</p>
+                </div>
+                
+                <!-- Estadísticas -->
+                <div id="estadisticas" class="estadisticas">
+                    <div class="estadistica-item">
+                        <div class="estadistica-valor" id="totalEstudiantes">0</div>
+                        <div class="text-muted">Total Estudiantes</div>
+                    </div>
+                    <div class="estadistica-item">
+                        <div class="estadistica-valor" id="promedioNota">0.00</div>
+                        <div class="text-muted">Promedio de Notas</div>
+                    </div>
+                    <div class="estadistica-item">
+                        <div class="estadistica-valor" id="aprobados">0</div>
+                        <div class="text-muted">Aprobados</div>
+                    </div>
+                    <div class="estadistica-item">
+                        <div class="estadistica-valor" id="desaprobados">0</div>
+                        <div class="text-muted">Desaprobados</div>
+                    </div>
+                </div>
+                
+                <!-- Tabla de matriculados -->
+                <div id="tablaMatriculados" class="tabla-matriculados">
+                    <h4>
+                        <span class="glyphicon glyphicon-list"></span>
+                        Estudiantes Matriculados en el Curso <strong id="cursoIdTabla"></strong>
+                    </h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-custom">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>ID</th>
+                                    <th>Nombre del Estudiante</th>
+                                    <th class="text-center">Precio (S/)</th>
+                                    <th class="text-center">Nota</th>
+                                    <th class="text-center">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyMatriculados">
+                                <!-- Los datos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery 3.7.1 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.7 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // URL base del servicio REST - AJUSTA SEGÚN TU CONFIGURACIÓN
+            const API_BASE_URL = 'http://localhost:8080/educa/api';
+            
+            // CSS para animar el spinner
+            $('<style>')
+                .text('.glyphicon-refresh-animate { animation: spin 1s infinite linear; } @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }')
+                .appendTo('head');
+            
+            // Manejo del formulario
+            $('#formConsulta').on('submit', function(e) {
+                e.preventDefault();
+                
+                const idCurso = $('#idCurso').val();
+                
+                // Ocultar todo
+                ocultarTodo();
+                
+                // Mostrar spinner
+                $('.spinner').show();
+                
+                // Realizar petición AJAX
+                $.ajax({
+                    url: `${API_BASE_URL}/${idCurso}/matriculados`,
+                    type: 'GET',
+                    dataType: 'json',
+                    timeout: 10000,
+                    success: function(matriculados) {
+                        $('.spinner').hide();
+                        
+                        if (matriculados.length === 0) {
+                            // Curso existe pero sin matriculados
+                            $('#cursoIdVacio').text(idCurso);
+                            $('#alertaSinMatriculados').fadeIn();
+                        } else {
+                            // Mostrar tabla con matriculados
+                            mostrarMatriculados(idCurso, matriculados);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('.spinner').hide();
+                        
+                        if (xhr.status === 404) {
+                            // Curso no encontrado
+                            $('#cursoIdError').text(idCurso);
+                            $('#alertaError').fadeIn();
+                        } else {
+                            alert('Error al consultar el servicio: ' + error);
+                        }
+                    }
+                });
+            });
+            
+            // Función para ocultar todos los elementos de resultado
+            function ocultarTodo() {
+                $('.alert-custom').hide();
+                $('#tablaMatriculados').hide();
+                $('#estadisticas').hide();
+                $('#tbodyMatriculados').empty();
+            }
+            
+            // Función para mostrar la tabla de matriculados
+            function mostrarMatriculados(idCurso, matriculados) {
+                $('#cursoIdTabla').text(idCurso);
+                
+                let html = '';
+                let sumaNotas = 0;
+                let aprobados = 0;
+                let desaprobados = 0;
+                
+                matriculados.forEach(function(estudiante, index) {
+                    const nota = estudiante.nota;
+                    const aprobado = nota >= 11;
+                    
+                    sumaNotas += nota;
+                    if (aprobado) {
+                        aprobados++;
+                    } else {
+                        desaprobados++;
+                    }
+                    
+                    const estadoClass = aprobado ? 'nota-aprobado' : 'nota-desaprobado';
+                    const estadoTexto = aprobado ? 'Aprobado' : 'Desaprobado';
+                    
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${estudiante.id}</td>
+                            <td>${estudiante.nombre}</td>
+                            <td class="text-center">${estudiante.precio.toFixed(2)}</td>
+                            <td class="text-center"><strong>${nota}</strong></td>
+                            <td class="text-center">
+                                <span class="badge badge-nota ${estadoClass}">${estadoTexto}</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                $('#tbodyMatriculados').html(html);
+                
+                // Calcular y mostrar estadísticas
+                const promedio = sumaNotas / matriculados.length;
+                $('#totalEstudiantes').text(matriculados.length);
+                $('#promedioNota').text(promedio.toFixed(2));
+                $('#aprobados').text(aprobados);
+                $('#desaprobados').text(desaprobados);
+                
+                // Mostrar tabla y estadísticas
+                $('#estadisticas').fadeIn();
+                $('#tablaMatriculados').fadeIn();
+            }
+            
+            // Limpiar resultados cuando se cambia el input
+            $('#idCurso').on('input', function() {
+                ocultarTodo();
+            });
+        });
+    </script>
+</body>
+</html>
